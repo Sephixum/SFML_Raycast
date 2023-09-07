@@ -1,0 +1,69 @@
+#include <Map.hpp>
+
+void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+  for (int i{0}; i < MAP_SIZE_WIDHT; i++) {
+    for (int j{0}; j < MAP_SIZE_HEIGHT; j++) {
+      target.draw(tileMap[i][j].tile, states);
+    }
+  }
+  target.draw(tileSelector, states);
+}
+
+Map::Map() { initMap(); }
+
+void Map::initMap() {
+  tileSelector.setSize(sf::Vector2f(GRID_SIZE, GRID_SIZE));
+  tileSelector.setPosition(sf::Vector2f(GRID_SIZE, GRID_SIZE));
+  tileSelector.setFillColor(sf::Color::Black);
+  tileSelector.setOutlineThickness(1.f);
+  tileSelector.setOutlineColor(sf::Color::Red);
+
+  for (int i{0}; i < MAP_SIZE_WIDHT; i++) {
+    for (int j{0}; j < MAP_SIZE_HEIGHT; j++) {
+      tileMap[i][j].tile.setSize(sf::Vector2f(GRID_SIZE, GRID_SIZE));
+      tileMap[i][j].tile.setOutlineThickness(1.f);
+      if (i == 0 || i == MAP_SIZE_WIDHT - 1) {
+        tileMap[i][j].type = CellTypes::Wall;
+        tileMap[i][j].tile.setFillColor(sf::Color::Black);
+        tileMap[i][j].tile.setOutlineColor(sf::Color::White);
+      } else if (j == 0 || j == MAP_SIZE_HEIGHT - 1) {
+        tileMap[i][j].type = CellTypes::Wall;
+        tileMap[i][j].tile.setFillColor(sf::Color::Black);
+        tileMap[i][j].tile.setOutlineColor(sf::Color::White);
+      } else {
+        tileMap[i][j].type = CellTypes::Empty;
+        tileMap[i][j].tile.setFillColor(sf::Color(255, 255, 255, 120));
+        tileMap[i][j].tile.setOutlineColor(sf::Color::Black);
+      }
+      tileMap[i][j].tile.setPosition(i * GRID_SIZE, j * GRID_SIZE);
+    }
+  }
+}
+
+void Map::update(Player &player) {
+  sf::Vector2u playerPosGrid;
+  auto playerPos = player.sprite.getPosition();
+  if (playerPos.x >= 0.f) {
+    playerPosGrid.x = playerPos.x / GRID_SIZE;
+  }
+  if (playerPos.y >= 0.f) {
+    playerPosGrid.y = playerPos.y / GRID_SIZE;
+  }
+  tileSelector.setPosition(playerPosGrid.x * GRID_SIZE,
+                                 playerPosGrid.y * GRID_SIZE);
+}
+
+void Map::changeCellTypeAndColor(sf::Vector2i &position) {
+  if (tileMap[position.x][position.y].type == CellTypes::Wall) {
+    tileMap[position.x][position.y].tile.setFillColor(
+        sf::Color(255, 255, 255, 120));
+    tileMap[position.x][position.y].tile.setOutlineColor(
+        sf::Color::Black);
+    tileMap[position.x][position.y].type = CellTypes::Empty;
+  } else if (tileMap[position.x][position.y].type == CellTypes::Empty) {
+    tileMap[position.x][position.y].tile.setFillColor(sf::Color::Black);
+    tileMap[position.x][position.y].tile.setOutlineColor(
+        sf::Color::White);
+    tileMap[position.x][position.y].type = CellTypes::Wall;
+  }
+}
