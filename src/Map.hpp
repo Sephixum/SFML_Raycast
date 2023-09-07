@@ -2,6 +2,7 @@
 
 #include <Globals.hpp>
 #include <Player.hpp>
+#include <vector>
 
 class Map : public sf::Drawable {
 private:
@@ -13,8 +14,8 @@ public:
   void update(Player &);
   void changeCellTypeAndColor(sf::Vector2i &);
 
-  Cell tileMap[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT];
+  CELL tileMap[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT];
+  CELL_TYPES currentSelectedCellType;
   sf::RectangleShape tileSelector;
   sf::Vector2u tileSelectorPos;
-
 };

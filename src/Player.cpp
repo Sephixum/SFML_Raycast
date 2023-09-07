@@ -1,7 +1,11 @@
-#include <Player.hpp>
 #include <MyFuncs.hpp>
+#include <Player.hpp>
+#include <filesystem>
+#include <memory>
 
 Player::Player() { initPlayer(); }
+
+Player::~Player() { delete _selectedTexture; }
 
 void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const {
   states.transform *= getTransform();
@@ -20,8 +24,12 @@ void Player::initPlayer() {
 
   _visionDensity = 900;
 
-  if (!_texture.loadFromFile("textures/eagle.png")) {
-    throw "Texture does not exist or cannot be loaded.\n";
+  for (const auto &entry : std::filesystem::directory_iterator("textures")) {
+    sf::Texture tmpTexture;
+    if (!tmpTexture.loadFromFile(entry.path())) {
+      throw "Failed loading textures";
+    }
+    _textures.push_back(tmpTexture);
   }
 }
 
@@ -77,7 +85,7 @@ void Player::Update(float dt) {
 }
 
 void Player::DrawRays(sf::RenderWindow &window,
-                      Cell tileMap[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT]) {
+                      CELL tileMap[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT]) {
   auto halfOfFOV = FOV / 2.f;
   auto rayIncrease = FOV / _visionDensity;
   float currentAngle = _angle - halfOfFOV;
@@ -91,7 +99,7 @@ void Player::DrawRays(sf::RenderWindow &window,
 }
 
 void Player::DrawRay(sf::RenderWindow &window,
-                     Cell tileMap[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT],
+                     CELL tileMap[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT],
                      float currentAngle, unsigned short rayNum) {
   sf::Vector2i mapPOS((_spritePOS.x / GRID_SIZE), (_spritePOS.y / GRID_SIZE));
 
@@ -126,7 +134,7 @@ void Player::DrawRay(sf::RenderWindow &window,
   while ((mapPOS.x * GRID_SIZE + 1) < WINDOW_WIDTH / 2.f &&
          (mapPOS.y * GRID_SIZE + 1) < WINDOW_HEIGHT &&
          (mapPOS.x * GRID_SIZE) > -1 &&
-         tileMap[mapPOS.x][mapPOS.y].type != CellTypes::Wall) {
+         CELL_TYPES::Empty == tileMap[mapPOS.x][mapPOS.y].type) {
     if (sideDistX < sideDistY) {
       sideDistX += (deltaDistX * GRID_SIZE);
       mapPOS.x += step.x;
@@ -148,7 +156,7 @@ void Player::DrawRay(sf::RenderWindow &window,
     ray[1].color = sf::Color::Red;
     this->RenderWorld(window, (PI / 2 - (fn::degToRad(_angle) - radCurAngle)),
                       sideDistX, rayNum, sf::Color(255, 255, 255, 255),
-                      ray[1].position.y);
+                      ray[1].position.y, tileMap[mapPOS.x][mapPOS.y].type);
   } break;
   case 1: {
     sideDistY -= deltaDistY * GRID_SIZE;
@@ -158,17 +166,49 @@ void Player::DrawRay(sf::RenderWindow &window,
     ray[1].color = sf::Color::Blue;
     this->RenderWorld(window, (PI / 2 - (fn::degToRad(_angle) - radCurAngle)),
                       sideDistY, rayNum, sf::Color(40, 40, 40, 255),
-                      ray[1].position.x);
+                      ray[1].position.x, tileMap[mapPOS.x][mapPOS.y].type);
   } break;
   }
   window.draw(ray);
 }
 
 void Player::RenderWorld(sf::RenderWindow &window, float remainingRad,
-                         float hypotenuse, unsigned short rayNum,
-                         sf::Color color, float rayHitOffsetFromGrid) {
-  float perpWallDist = std::sin(remainingRad) * hypotenuse;
-  float lineHeight = WINDOW_HEIGHT / perpWallDist;
+                         float hypotenuse, int rayNum,
+                         const sf::Color color, const float rayHitOffsetFromGrid,
+                         CELL_TYPES &rayEndCellType) {
+
+  // setTex(rayEndCellType, *_selectedTexture)
+  switch (rayEndCellType) {
+  case BlueStone:
+    _selectedTexture = &_textures[0];
+    break;
+  case ColorStone:
+    _selectedTexture = &_textures[1];
+    break;
+  case Eagle:
+    _selectedTexture = &_textures[2];
+    break;
+  case GreyStone:
+    _selectedTexture = &_textures[3];
+    break;
+  case Mossy:
+    _selectedTexture = &_textures[4];
+    break;
+  case PurpleBrick:
+    _selectedTexture = &_textures[5];
+    break;
+  case RedBrick:
+    _selectedTexture = &_textures[6];
+    break;
+  case Wood:
+    _selectedTexture = &_textures[7];
+    break;
+  default:
+    break;
+  }
+
+  float perpendicularToWallDist = std::sin(remainingRad) * hypotenuse;
+  float lineHeight = WINDOW_HEIGHT / perpendicularToWallDist;
 
   float textrueOffSet = std::fmod(rayHitOffsetFromGrid, GRID_SIZE) / GRID_SIZE;
 
@@ -177,11 +217,11 @@ void Player::RenderWorld(sf::RenderWindow &window, float remainingRad,
       WINDOW_WIDTH / 2.f + (rayNum * WINDOW_WIDTH / 2.f / _visionDensity);
   mainStripe[0].position.y = WINDOW_HEIGHT / 2.f - lineHeight * 15.f;
   mainStripe[0].texCoords =
-      sf::Vector2f(_texture.getSize().x * textrueOffSet, 0.0f);
+      sf::Vector2f(_selectedTexture->getSize().x * textrueOffSet, 0.0f);
   mainStripe[1].position.x = mainStripe[0].position.x;
   mainStripe[1].position.y = WINDOW_HEIGHT / 2.f + lineHeight * 15.f;
-  mainStripe[1].texCoords =
-      sf::Vector2f(_texture.getSize().x * textrueOffSet, _texture.getSize().y);
+  mainStripe[1].texCoords = sf::Vector2f(_selectedTexture->getSize().x * textrueOffSet,
+                                         _selectedTexture->getSize().y);
 
   sf::VertexArray floorStripe(sf::Lines, 2);
   floorStripe[0].position.x = mainStripe[1].position.x;
@@ -201,5 +241,6 @@ void Player::RenderWorld(sf::RenderWindow &window, float remainingRad,
 
   window.draw(skyStripe);
   window.draw(floorStripe);
-  window.draw(mainStripe, &_texture);
+  window.draw(mainStripe, _selectedTexture);
+  _selectedTexture = nullptr;
 }

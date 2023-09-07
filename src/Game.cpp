@@ -1,5 +1,6 @@
 #include <Game.hpp>
 #include <Globals.hpp>
+#include <iostream>
 #include <memory>
 
 Game::Game() {
@@ -30,8 +31,11 @@ void Game::pollEvents() {
       _gameWindow->close();
     } break;
     case sf::Event::KeyPressed: {
-      if (_event.key.code == sf::Keyboard::Escape) {
-        _gameWindow->close();
+      unsigned indexOfTexture = _event.key.code - sf::Keyboard::Num1;
+      if (indexOfTexture <= 8) {
+        _map.currentSelectedCellType =
+            static_cast<CELL_TYPES>(indexOfTexture + 1);
+        // _player.texture = &_player.textures[indexOfTexture];
       }
     } break;
     case sf::Event::MouseButtonPressed: {

@@ -13,9 +13,19 @@ constexpr int MAP_SIZE_WIDHT = 36;
 constexpr int MAP_SIZE_HEIGHT = 25;
 constexpr float GRID_SIZE = 25.f;
 
-enum CellTypes { Empty, Wall };
+enum CELL_TYPES {
+  Empty = 0,
+  BlueStone,
+  ColorStone,
+  Eagle,
+  GreyStone,
+  Mossy,
+  PurpleBrick,
+  RedBrick,
+  Wood
+};
 
-struct Cell {
-  CellTypes type;
+struct CELL {
+  CELL_TYPES type;
   sf::RectangleShape tile;
 };
