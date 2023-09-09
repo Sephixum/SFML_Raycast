@@ -6,17 +6,17 @@ void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
       target.draw(tileMap[i][j].tile, states);
     }
   }
-  target.draw(tileSelector, states);
+  target.draw(_tileSelector, states);
 }
 
 Map::Map() { initMap(); }
 
 void Map::initMap() {
-  tileSelector.setSize(sf::Vector2f(GRID_SIZE, GRID_SIZE));
-  tileSelector.setPosition(sf::Vector2f(GRID_SIZE, GRID_SIZE));
-  tileSelector.setFillColor(sf::Color::Black);
-  tileSelector.setOutlineThickness(1.f);
-  tileSelector.setOutlineColor(sf::Color::Red);
+  _tileSelector.setSize(sf::Vector2f(GRID_SIZE, GRID_SIZE));
+  _tileSelector.setPosition(sf::Vector2f(GRID_SIZE, GRID_SIZE));
+  _tileSelector.setFillColor(sf::Color::Black);
+  _tileSelector.setOutlineThickness(1.f);
+  _tileSelector.setOutlineColor(sf::Color::Red);
 
   currentSelectedCellType = CELL_TYPES::RedBrick;
 
@@ -51,7 +51,7 @@ void Map::update(Player &player) {
   if (playerPos.y >= 0.f) {
     playerPosGrid.y = playerPos.y / GRID_SIZE;
   }
-  tileSelector.setPosition(playerPosGrid.x * GRID_SIZE,
+  _tileSelector.setPosition(playerPosGrid.x * GRID_SIZE,
                            playerPosGrid.y * GRID_SIZE);
 }
 

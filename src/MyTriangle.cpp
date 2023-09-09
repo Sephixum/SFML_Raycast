@@ -4,8 +4,6 @@ MyTriangle::MyTriangle() : vertices(sf::Triangles, 3) { initTriangle(); }
 
 void MyTriangle::draw(sf::RenderTarget &target, sf::RenderStates states) const {
   states.transform *= getTransform();
-  // states.texture = nullptr;
-  // states.shader = nullptr;
   states.blendMode = sf::BlendAlpha;
 
   target.draw(vertices, states);

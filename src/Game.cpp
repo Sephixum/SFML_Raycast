@@ -1,7 +1,4 @@
 #include <Game.hpp>
-#include <Globals.hpp>
-#include <iostream>
-#include <memory>
 
 Game::Game() {
   initVars();
@@ -35,7 +32,6 @@ void Game::pollEvents() {
       if (indexOfTexture <= 8) {
         _map.currentSelectedCellType =
             static_cast<CELL_TYPES>(indexOfTexture + 1);
-        // _player.texture = &_player.textures[indexOfTexture];
       }
     } break;
     case sf::Event::MouseButtonPressed: {

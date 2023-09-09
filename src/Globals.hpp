@@ -13,6 +13,8 @@ constexpr int MAP_SIZE_WIDHT = 36;
 constexpr int MAP_SIZE_HEIGHT = 25;
 constexpr float GRID_SIZE = 25.f;
 
+constexpr float PERPENDICULAR_LINE_SCALE = 15.f;
+
 enum CELL_TYPES {
   Empty = 0,
   BlueStone,

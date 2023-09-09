@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Map.hpp>
-#include <Player.hpp>
-#include <SFML/Graphics/Text.hpp>
 #include <SFML/Window/Event.hpp>
 #include <memory>
 

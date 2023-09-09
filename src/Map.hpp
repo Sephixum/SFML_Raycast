@@ -1,12 +1,13 @@
 #pragma once
 
-#include <Globals.hpp>
 #include <Player.hpp>
-#include <vector>
 
 class Map : public sf::Drawable {
 private:
   virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+
+  sf::RectangleShape _tileSelector;
+  sf::Vector2u _tileSelectorPos;
 
 public:
   Map();
@@ -16,6 +17,4 @@ public:
 
   CELL tileMap[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT];
   CELL_TYPES currentSelectedCellType;
-  sf::RectangleShape tileSelector;
-  sf::Vector2u tileSelectorPos;
 };

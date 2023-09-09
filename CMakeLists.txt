@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.11)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
-project(raycasting)
+project(raycasting 
+        VERSION 1.6.2
+        LANGUAGES CXX)
 
 set(TEXTURES_DIR ${CMAKE_SOURCE_DIR}/textures)
 
@@ -19,9 +21,6 @@ target_link_libraries(raycasting PRIVATE
                       sfml-window
                       Game
                       )
+configure_file(version version.hpp)
 
-# add_custom_command( TARGET raycasting
-#                    POST_BUILD
-#                    COMMAND ${CMAKE_COMMAND}
-#                    -E copy_directory ${TEXTURES_DIR}
-#                    $<TARGET_FILE_DIR:raycasting>/pics)
+target_include_directories(raycasting PRIVATE ${PROJECT_BINARY_DIR})

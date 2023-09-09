@@ -1,14 +1,12 @@
 #include <MyFuncs.hpp>
 #include <Player.hpp>
 #include <filesystem>
-#include <memory>
 
 Player::Player() { initPlayer(); }
 
 Player::~Player() { delete _selectedTexture; }
 
 void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-  states.transform *= getTransform();
   target.draw(sprite, states);
 }
 
@@ -33,7 +31,7 @@ void Player::initPlayer() {
   }
 }
 
-void Player::Update(float dt) {
+void Player::Update(float &dt) {
   auto playerAngleRads = fn::degToRad(_angle);
 
   sf::Vector2f horizontalDiff(SPEED * dt * std::cos(playerAngleRads),
@@ -100,7 +98,7 @@ void Player::DrawRays(sf::RenderWindow &window,
 
 void Player::DrawRay(sf::RenderWindow &window,
                      CELL tileMap[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT],
-                     float currentAngle, unsigned short rayNum) {
+                     float currentAngle, unsigned short currentRayNumber) {
   sf::Vector2i mapPOS((_spritePOS.x / GRID_SIZE), (_spritePOS.y / GRID_SIZE));
 
   float radCurAngle = fn::degToRad(currentAngle);
@@ -154,8 +152,8 @@ void Player::DrawRay(sf::RenderWindow &window,
     ray[0].color = sf::Color::Red;
     ray[1].position = ray[0].position + rayDir * sideDistX;
     ray[1].color = sf::Color::Red;
-    this->RenderWorld(window, (PI / 2 - (fn::degToRad(_angle) - radCurAngle)),
-                      sideDistX, rayNum, sf::Color(255, 255, 255, 255),
+    auto remainingRad = PI / 2 - (fn::degToRad(_angle) - radCurAngle);
+    this->RenderWorld(window, remainingRad, sideDistX, currentRayNumber,
                       ray[1].position.y, tileMap[mapPOS.x][mapPOS.y].type);
   } break;
   case 1: {
@@ -164,8 +162,8 @@ void Player::DrawRay(sf::RenderWindow &window,
     ray[0].color = sf::Color::Blue;
     ray[1].position = ray[0].position + rayDir * sideDistY;
     ray[1].color = sf::Color::Blue;
-    this->RenderWorld(window, (PI / 2 - (fn::degToRad(_angle) - radCurAngle)),
-                      sideDistY, rayNum, sf::Color(40, 40, 40, 255),
+    auto remainingRad = PI / 2 - (fn::degToRad(_angle) - radCurAngle);
+    this->RenderWorld(window, remainingRad, sideDistY, currentRayNumber,
                       ray[1].position.x, tileMap[mapPOS.x][mapPOS.y].type);
   } break;
   }
@@ -173,12 +171,43 @@ void Player::DrawRay(sf::RenderWindow &window,
 }
 
 void Player::RenderWorld(sf::RenderWindow &window, float remainingRad,
-                         float hypotenuse, int rayNum,
-                         const sf::Color color, const float rayHitOffsetFromGrid,
-                         CELL_TYPES &rayEndCellType) {
+                         float hypotenuse, int currentRayNumber,
+                         float rayHitOffsetFromGrid,
+                         CELL_TYPES rayPositionCellType) {
+  setTextureBasedOnCellType(rayPositionCellType);
 
-  // setTex(rayEndCellType, *_selectedTexture)
-  switch (rayEndCellType) {
+  float perpendicularToWallDist = std::sin(remainingRad) * hypotenuse;
+  float lineHeight = WINDOW_HEIGHT / perpendicularToWallDist;
+
+  float textrueOffSet = std::fmod(rayHitOffsetFromGrid, GRID_SIZE) / GRID_SIZE;
+
+  sf::VertexArray mainStripe(sf::Lines, 2);
+  setUpWallStripe(mainStripe, currentRayNumber, lineHeight, textrueOffSet);
+
+  sf::VertexArray floorStripe(sf::Lines, 2);
+  floorStripe[0].position.x = mainStripe[1].position.x;
+  floorStripe[0].position.y = mainStripe[1].position.y;
+  floorStripe[0].color = sf::Color(120, 120, 120, 255);
+  floorStripe[1].position.x = mainStripe[1].position.x;
+  floorStripe[1].position.y = WINDOW_HEIGHT;
+  floorStripe[1].color = sf::Color(120, 120, 120, 255);
+
+  sf::VertexArray skyStripe(sf::Lines, 2);
+  skyStripe[0].position.x = mainStripe[0].position.x;
+  skyStripe[0].position.y = WINDOW_HEIGHT / 2.f;
+  skyStripe[1].color = sf::Color(0, 197, 255, 255);
+  skyStripe[1].position.x = mainStripe[0].position.x;
+  skyStripe[1].position.y = 0;
+  skyStripe[0].color = sf::Color(255, 196, 0, 255);
+
+  window.draw(skyStripe);
+  window.draw(floorStripe);
+  window.draw(mainStripe, _selectedTexture);
+  _selectedTexture = nullptr;
+}
+
+void Player::setTextureBasedOnCellType(CELL_TYPES rayPositionCellType) {
+  switch (rayPositionCellType) {
   case BlueStone:
     _selectedTexture = &_textures[0];
     break;
@@ -206,41 +235,22 @@ void Player::RenderWorld(sf::RenderWindow &window, float remainingRad,
   default:
     break;
   }
+}
 
-  float perpendicularToWallDist = std::sin(remainingRad) * hypotenuse;
-  float lineHeight = WINDOW_HEIGHT / perpendicularToWallDist;
-
-  float textrueOffSet = std::fmod(rayHitOffsetFromGrid, GRID_SIZE) / GRID_SIZE;
-
-  sf::VertexArray mainStripe(sf::Lines, 2);
+void Player::setUpWallStripe(sf::VertexArray &mainStripe,
+                             const int currentRayNumber, const float lineHeight,
+                             const float textrueOffSet) {
   mainStripe[0].position.x =
-      WINDOW_WIDTH / 2.f + (rayNum * WINDOW_WIDTH / 2.f / _visionDensity);
-  mainStripe[0].position.y = WINDOW_HEIGHT / 2.f - lineHeight * 15.f;
+      WINDOW_WIDTH / 2.f +
+      (currentRayNumber * WINDOW_WIDTH / 2.f / _visionDensity);
+  mainStripe[0].position.y =
+      WINDOW_HEIGHT / 2.f - lineHeight * PERPENDICULAR_LINE_SCALE;
   mainStripe[0].texCoords =
-      sf::Vector2f(_selectedTexture->getSize().x * textrueOffSet, 0.0f);
+      sf::Vector2f(_selectedTexture->getSize().x * textrueOffSet, 0.f);
   mainStripe[1].position.x = mainStripe[0].position.x;
-  mainStripe[1].position.y = WINDOW_HEIGHT / 2.f + lineHeight * 15.f;
-  mainStripe[1].texCoords = sf::Vector2f(_selectedTexture->getSize().x * textrueOffSet,
-                                         _selectedTexture->getSize().y);
-
-  sf::VertexArray floorStripe(sf::Lines, 2);
-  floorStripe[0].position.x = mainStripe[1].position.x;
-  floorStripe[0].position.y = mainStripe[1].position.y;
-  floorStripe[0].color = sf::Color(120, 120, 120, 255);
-  floorStripe[1].position.x = mainStripe[1].position.x;
-  floorStripe[1].position.y = WINDOW_HEIGHT;
-  floorStripe[1].color = sf::Color(120, 120, 120, 255);
-
-  sf::VertexArray skyStripe(sf::Lines, 2);
-  skyStripe[0].position.x = mainStripe[0].position.x;
-  skyStripe[0].position.y = WINDOW_HEIGHT / 2.f;
-  skyStripe[1].color = sf::Color(0, 197, 255, 255);
-  skyStripe[1].position.x = mainStripe[0].position.x;
-  skyStripe[1].position.y = 0;
-  skyStripe[0].color = sf::Color(255, 196, 0, 255);
-
-  window.draw(skyStripe);
-  window.draw(floorStripe);
-  window.draw(mainStripe, _selectedTexture);
-  _selectedTexture = nullptr;
+  mainStripe[1].position.y =
+      WINDOW_HEIGHT / 2.f + lineHeight * PERPENDICULAR_LINE_SCALE;
+  mainStripe[1].texCoords =
+      sf::Vector2f(_selectedTexture->getSize().x * textrueOffSet,
+                   _selectedTexture->getSize().y);
 }
