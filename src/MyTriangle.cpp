@@ -1,4 +1,4 @@
-#include <MyTrinagle.hpp>
+#include "MyTriangle.hpp"
 
 MyTriangle::MyTriangle() : vertices(sf::Triangles, 3) { initTriangle(); }
 

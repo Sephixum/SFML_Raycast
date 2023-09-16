@@ -1,4 +1,4 @@
-#include <MyFuncs.hpp>
+#include "MyFuncs.hpp"
 #include <cmath>
 
 sf::Vector2f fn::normalize(const sf::Vector2f &vector) {

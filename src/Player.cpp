@@ -1,5 +1,5 @@
-#include <MyFuncs.hpp>
-#include <Player.hpp>
+#include "MyFuncs.hpp"
+#include "Player.hpp"
 #include <filesystem>
 
 Player::Player() { initPlayer(); }
@@ -24,7 +24,7 @@ void Player::initPlayer() {
 
   for (const auto &entry : std::filesystem::directory_iterator("textures")) {
     sf::Texture tmpTexture;
-    if (!tmpTexture.loadFromFile(entry.path())) {
+    if (!tmpTexture.loadFromFile(entry.path().string())) {
       throw "Failed loading textures";
     }
     _textures.push_back(tmpTexture);
@@ -128,7 +128,7 @@ void Player::DrawRay(sf::RenderWindow &window,
     sideDistY = (((mapPOS.y + 1.0f) * GRID_SIZE) - _spritePOS.y) * deltaDistY;
   }
 
-  int side;
+  int side{-1};
   while ((mapPOS.x * GRID_SIZE + 1) < WINDOW_WIDTH / 2.f &&
          (mapPOS.y * GRID_SIZE + 1) < WINDOW_HEIGHT &&
          (mapPOS.x * GRID_SIZE) > -1 &&

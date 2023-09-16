@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Globals.hpp>
-#include <MyTrinagle.hpp>
+#include "Globals.hpp"
+#include "MyTriangle.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Keyboard.hpp>
