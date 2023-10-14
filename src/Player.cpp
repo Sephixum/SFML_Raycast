@@ -174,7 +174,8 @@ void Player::RenderWorld(sf::RenderWindow &window, float remainingRad,
                          float hypotenuse, int currentRayNumber,
                          float rayHitOffsetFromGrid,
                          CELL_TYPES rayPositionCellType) {
-  setTextureBasedOnCellType(rayPositionCellType);
+
+  _selectedTexture = &_textures[static_cast<int>(rayPositionCellType - 1)];
 
   float perpendicularToWallDist = std::sin(remainingRad) * hypotenuse;
   float lineHeight = WINDOW_HEIGHT / perpendicularToWallDist;
@@ -204,37 +205,6 @@ void Player::RenderWorld(sf::RenderWindow &window, float remainingRad,
   window.draw(floorStripe);
   window.draw(mainStripe, _selectedTexture);
   _selectedTexture = nullptr;
-}
-
-void Player::setTextureBasedOnCellType(CELL_TYPES rayPositionCellType) {
-  switch (rayPositionCellType) {
-  case BlueStone:
-    _selectedTexture = &_textures[0];
-    break;
-  case ColorStone:
-    _selectedTexture = &_textures[1];
-    break;
-  case Eagle:
-    _selectedTexture = &_textures[2];
-    break;
-  case GreyStone:
-    _selectedTexture = &_textures[3];
-    break;
-  case Mossy:
-    _selectedTexture = &_textures[4];
-    break;
-  case PurpleBrick:
-    _selectedTexture = &_textures[5];
-    break;
-  case RedBrick:
-    _selectedTexture = &_textures[6];
-    break;
-  case Wood:
-    _selectedTexture = &_textures[7];
-    break;
-  default:
-    break;
-  }
 }
 
 void Player::setUpWallStripe(sf::VertexArray &mainStripe,
