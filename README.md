@@ -71,6 +71,12 @@ Source files are all in `src` and defined headers are in `include`.
 <p>Build and compile:</p>
 <pre><code>$ cmake --build build build</code></pre>
 
+<h3>Usage</h3>
+<p>You can move around the map using <code>W</code> <code>A</code> <code>S</code> <code>D</code>.</p>
+<p>Camera can be rotated with keys <code>H</code> (anticlockwise) and <code>L</code> (clockwise).</p>
+<p>Arrow key <code>Down</code> and <code>Up</code> can be used to increase of decrease vision density.</p>
+<p>You can reset your vision density with <code>R</code>.</p>
+
 <!-- <i>Note that all of the commands that appear in this project also appear in <code>commands.txt</code>, for easy copying and pasting.</i> -->
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
