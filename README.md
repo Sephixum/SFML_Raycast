@@ -21,7 +21,7 @@
 <h2 id="about-the-project"> :pencil: About The Project</h2>
 <p align="justify">
     I alway had the dream of combining math and programming in hopes of creating cool stuff with them,
-so after spending a bit of time searching I got advised to enter the world of graphics programming this
+so after spending a bit of time searching I got advised to enter the world of graphics programming. this
 was my first choice as a project for this topic.
 </p>
 
@@ -69,7 +69,10 @@ Source files are all in `src` and defined headers are in `include`.
 <pre><code>$ cmake -S . -B build</code></pre>
 
 <p>Build and compile:</p>
-<pre><code>$ cmake --build build build</code></pre>
+<pre><code>$ cmake --build build</code></pre>
+
+<p>You can run the project:</p>
+<pre><code>$ ./build/raycasting</code></pre>
 
 <h3>Usage</h3>
 <p>You can move around the map using <code>W</code> <code>A</code> <code>S</code> <code>D</code>.</p>
