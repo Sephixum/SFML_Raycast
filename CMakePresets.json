@@ -1,9 +1,0 @@
-{
-    "version" : 3,
-    "configurePresets": [
-        {
-            "name": "Debug",
-            "toolchainFile": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        }
-    ]
-}
