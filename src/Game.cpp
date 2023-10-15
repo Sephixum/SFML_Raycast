@@ -37,8 +37,8 @@ void Game::pollEvents() {
     case sf::Event::MouseButtonPressed: {
       if (_event.mouseButton.button == sf::Mouse::Left) {
         if (_event.mouseButton.x < (WINDOW_WIDTH / 2)) {
-          auto mousePOS = sf::Vector2i(_event.mouseButton.x / GRID_SIZE,
-                                       _event.mouseButton.y / GRID_SIZE);
+          auto mousePOS = sf::Vector2i(static_cast<int>(_event.mouseButton.x / GRID_SIZE),
+                                       static_cast<int>(_event.mouseButton.y / GRID_SIZE));
           _map.changeCellTypeAndColor(mousePOS);
         }
       }

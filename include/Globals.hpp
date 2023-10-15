@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics/RectangleShape.hpp>
 
-constexpr float PI = 3.141592;
+constexpr double PI = 3.141592;
 
 constexpr int FOV = 66;
 constexpr float SPEED = 100.f;

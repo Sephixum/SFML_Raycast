@@ -1,3 +1,3 @@
-#define raycasting_VERSION_MAJOR @raycasting_VERSION_MAJOR@
-#define raycasting_VERSION_MINOR @raycasting_VERSION_MINOR@
-#define raycasting_VERSION_PATCH @raycasting_VERSION_PATCH@
+#define Raycasting_Engine_VERSION_MAJOR @Raycasting_Engine_VERSION_MAJOR@
+#define Raycasting_Engine_VERSION_MINOR @Raycasting_Engine_VERSION_MINOR@
+#define Raycasting_Engine_VERSION_PATCH @Raycasting_Engine_VERSION_PATCH@
