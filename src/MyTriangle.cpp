@@ -1,6 +1,6 @@
 #include "MyTriangle.hpp"
 
-MyTriangle::MyTriangle() : vertices(sf::Triangles, 3) { initTriangle(); }
+MyTriangle::MyTriangle() : vertices(sf::PrimitiveType::Triangles, 3) { initTriangle(); }
 
 void MyTriangle::draw(sf::RenderTarget &target, sf::RenderStates states) const {
   states.transform *= getTransform();
