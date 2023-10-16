@@ -13,6 +13,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(TEXTURES_DIR ${CMAKE_SOURCE_DIR}/textures)
 
+configure_file(version version.hpp)
+
 #add_subdirectory(src)
 add_executable(raycasting)
 
@@ -45,5 +47,3 @@ if(WIN32)
 endif()
 
 add_subdirectory(dependencies)
-
-configure_file(version version.hpp)
