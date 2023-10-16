@@ -6,14 +6,14 @@
 #include "imgui-SFML.h"
 
 int main() {
-  Game game;
-  std::cout << "raycasting project version : "
+  Engine engine;
+  std::cout << "Raycasting engine version : "
             << Raycasting_engine_VERSION_MAJOR << "."
             << Raycasting_engine_VERSION_MINOR << "."
             << Raycasting_engine_VERSION_PATCH << '\n';
-  while (game.running()) {
-    game.update();
-    game.render();
+  while (engine.running()) {
+    engine.update();
+    engine.render();
   }
   return 0;
 }

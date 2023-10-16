@@ -3,8 +3,10 @@
 #include "Map.hpp"
 #include <SFML/Window/Event.hpp>
 #include <memory>
+#include "imgui.h"
+#include "imgui-SFML.h"
 
-class Game {
+class Engine {
 private:
   void initVars();
   void initWindow();
@@ -21,10 +23,9 @@ private:
   Map _map;
 
 public:
-  Game();
-  const bool running() const;
+  Engine();
+  bool running() const;
   void pollEvents();
   void update();
   void render();
-  void run();
 };

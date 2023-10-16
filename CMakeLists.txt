@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 
 project(
   Raycasting_engine
-  VERSION 1.6.2
+  VERSION 1.6.4
   DESCRIPTION "very efficient raycasting system"
   LANGUAGES CXX)
 

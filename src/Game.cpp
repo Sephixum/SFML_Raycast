@@ -1,27 +1,27 @@
 #include "Game.hpp"
 
-Game::Game() {
+Engine::Engine() {
   initVars();
   initWindow();
 }
 
-void Game::initVars() {
+void Engine::initVars() {
   _gameWindow = nullptr;
   _windowSettings.antialiasingLevel = 16;
   _videoMode.width = WINDOW_WIDTH;
   _videoMode.height = WINDOW_HEIGHT;
 }
 
-void Game::initWindow() {
+void Engine::initWindow() {
   _gameWindow = std::make_unique<sf::RenderWindow>(
       _videoMode, "My sfml program", sf::Style::Default, _windowSettings);
   _gameWindow->setFramerateLimit(60);
   _gameWindow->setKeyRepeatEnabled(false);
 }
 
-const bool Game::running() const { return _gameWindow->isOpen(); }
+bool Engine::running() const { return _gameWindow->isOpen(); }
 
-void Game::pollEvents() {
+void Engine::pollEvents() {
   while (_gameWindow->pollEvent(_event)) {
     switch (_event.type) {
     case sf::Event::Closed: {
@@ -49,14 +49,14 @@ void Game::pollEvents() {
   }
 }
 
-void Game::update() {
+void Engine::update() {
   _deltaTime = _deltaClock.restart().asSeconds();
   pollEvents();
   _player.Update(_deltaTime);
   _map.update(_player);
 }
 
-void Game::render() {
+void Engine::render() {
   _gameWindow->clear();
   _gameWindow->draw(_map);
   _player.DrawRays(*_gameWindow, _map.tileMap);
