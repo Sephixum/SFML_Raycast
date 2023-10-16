@@ -24,6 +24,12 @@ private:
 
 public:
   Engine();
+  Engine(Engine &&other) = delete;
+  Engine(const Engine &other) = delete;
+  Engine &operator=(Engine &&other) = delete;
+  Engine &operator=(const Engine &other) = delete;
+  ~Engine();
+
   bool running() const;
   void pollEvents();
   void update();

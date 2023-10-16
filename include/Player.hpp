@@ -12,7 +12,6 @@ private:
   void initPlayer();
   void DrawRay(sf::RenderWindow &, CELL[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT], float,
                unsigned short);
-  void setTextureBasedOnCellType(CELL_TYPES);
   void setUpWallStripe(sf::VertexArray &, const int, const float, const float);
 
   float _angle;
@@ -21,12 +20,11 @@ private:
   std::vector<sf::Texture> _textures;
   sf::Texture *_selectedTexture;
 
-protected:
-  virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+  void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 public:
   Player();
-  ~Player();
+  ~Player() override;
   void Update(float &);
   void DrawRays(sf::RenderWindow &, CELL[MAP_SIZE_WIDHT][MAP_SIZE_HEIGHT]);
   void RenderWorld(sf::RenderWindow &, float, float, int, float, CELL_TYPES);

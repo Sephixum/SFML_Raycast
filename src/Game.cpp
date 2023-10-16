@@ -5,6 +5,8 @@ Engine::Engine() {
   initWindow();
 }
 
+Engine::~Engine() { ImGui::SFML::Shutdown(); }
+
 void Engine::initVars() {
   _gameWindow = nullptr;
   _windowSettings.antialiasingLevel = 16;
@@ -14,15 +16,22 @@ void Engine::initVars() {
 
 void Engine::initWindow() {
   _gameWindow = std::make_unique<sf::RenderWindow>(
-      _videoMode, "My sfml program", sf::Style::Default, _windowSettings);
+      _videoMode, "Raycasting engine", sf::Style::Default, _windowSettings);
   _gameWindow->setFramerateLimit(60);
   _gameWindow->setKeyRepeatEnabled(false);
+
+  // Imgui: init
+  ImGui::SFML::Init(*_gameWindow);
 }
 
 bool Engine::running() const { return _gameWindow->isOpen(); }
 
 void Engine::pollEvents() {
   while (_gameWindow->pollEvent(_event)) {
+
+    // Imgui: get events
+    ImGui::SFML::ProcessEvent(_event);
+
     switch (_event.type) {
     case sf::Event::Closed: {
       _gameWindow->close();
@@ -52,8 +61,15 @@ void Engine::pollEvents() {
 void Engine::update() {
   _deltaTime = _deltaClock.restart().asSeconds();
   pollEvents();
+
   _player.Update(_deltaTime);
   _map.update(_player);
+
+  // Imgui: update
+  ImGui::SFML::Update(*_gameWindow, _deltaClock.restart());
+  ImGui::Begin("Hello world!");
+  ImGui::Button("Look at this pretty button");
+  ImGui::End();
 }
 
 void Engine::render() {
@@ -61,5 +77,6 @@ void Engine::render() {
   _gameWindow->draw(_map);
   _player.DrawRays(*_gameWindow, _map.tileMap);
   _gameWindow->draw(_player);
+  ImGui::SFML::Render(*_gameWindow);
   _gameWindow->display();
 }

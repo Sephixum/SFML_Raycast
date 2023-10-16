@@ -1,8 +1,15 @@
 #include "MyFuncs.hpp"
 #include "Player.hpp"
 #include <filesystem>
+#include "imgui.h"
+#include "imgui-SFML.h"
 
-Player::Player() { initPlayer(); }
+Player::Player() {
+  _angle = 45.f;
+  _visionDensity = 900;
+
+  initPlayer();
+}
 
 Player::~Player() { delete _selectedTexture; }
 
@@ -11,7 +18,6 @@ void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Player::initPlayer() {
-  _angle = 45.f;
 
   sprite.setRotation(_angle);
   sprite.setOrigin(fn::averageOfVertexArray(sprite.vertices));
@@ -20,7 +26,6 @@ void Player::initPlayer() {
   _spritePOS.x = WINDOW_WIDTH / 4.f;
   _spritePOS.y = WINDOW_HEIGHT / 4.f;
 
-  _visionDensity = 900;
 
   for (const auto &entry : std::filesystem::directory_iterator("textures")) {
     sf::Texture tmpTexture;
@@ -203,6 +208,8 @@ void Player::RenderWorld(sf::RenderWindow &window, float remainingRad,
 
   window.draw(skyStripe);
   window.draw(floorStripe);
+//  ImGui::Image(*_selectedTexture);
+//  ImGui::ImageButton(*_selectedTexture);
   window.draw(mainStripe, _selectedTexture);
   _selectedTexture = nullptr;
 }
