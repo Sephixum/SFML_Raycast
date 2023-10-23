@@ -1,9 +1,13 @@
 include(FetchContent)
 
 # SFML
-
-find_package(SFML COMPONENTS graphics window system)
-if(NOT SFML_FOUND)
+find_package(
+  SFML
+  COMPONENTS graphics window system
+  QUIET)
+if(SFML_FOUND)
+  message(STATUS "Found SFML")
+else()
   message(
     "SFML was not found on your system.\nIt will be downloaded from it's github repo."
   )
@@ -13,8 +17,11 @@ if(NOT SFML_FOUND)
 endif()
 
 # Dear ImGui
-find_package(imgui)
-if(NOT imgui_FOUND)
+find_package(imgui QUIET)
+if(imgui_FOUND)
+  message(STATUS "Found imgui")
+else()
+  message(STATUS "Fetching imgui...")
   FetchContent_Declare(
     imgui
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
@@ -24,7 +31,7 @@ if(NOT imgui_FOUND)
 endif()
 
 # ImGui-SFML
-find_package(ImGui-SFML)
+find_package(ImGui-SFML QUIET)
 if(ImGui-SFML_FOUND)
   message(STATUS "Found ImGui-SFML")
 else()

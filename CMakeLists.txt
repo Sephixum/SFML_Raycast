@@ -13,7 +13,8 @@ project(
 add_subdirectory(dependencies)
 
 add_executable(output)
-target_sources(output PRIVATE src/main.cpp src/Engine.cpp src/Gui.cpp)
+target_sources(output PRIVATE src/main.cpp src/Engine.cpp src/Gui.cpp
+                              src/Textures.cpp src/Map.cpp)
 target_include_directories(output PRIVATE ${PROJECT_BINARY_DIR}
                                           ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(output PRIVATE sfml-graphics sfml-system sfml-window
