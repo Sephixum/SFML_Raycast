@@ -1,4 +1,7 @@
 #include "Engine.hpp"
+#include "Utils.hpp"
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/View.hpp>
 
 Engine::Engine() {
   InitWindow();
@@ -9,14 +12,15 @@ Engine::~Engine() { gui_.ShutDown(); }
 
 auto Engine::InitWindow() noexcept -> void {
   window_ = std::make_unique<sf::RenderWindow>(
-      sf::VideoMode(kWindow_width, kWindow_height), "Develop window");
+      sf::VideoMode(kWindow_width, kWindow_height), "Develop window",
+      sf::Style::Resize);
   window_->setFramerateLimit(60);
 }
 
 auto Engine::InitVariables() noexcept -> void {
   textures_.Init();
   gui_.Init(*window_);
-  sprite.setTexture(*(textures_.selected_texture + 1));
+  mini_map_sprite_.SetPosition(kMap_width / 2.f, kMap_height / 2.f);
 }
 
 auto Engine::PollEvents() -> void {
@@ -31,19 +35,23 @@ auto Engine::PollEvents() -> void {
         window_->close();
       }
     } break;
+    case sf::Event::Resized: {
+      window_->setView(
+          sf::View(sf::FloatRect(0, 0, event_.size.width, event_.size.height)));
+
+    } break;
     }
   }
 }
 
 auto Engine::Update() noexcept -> void {
   gui_.Update(*window_, delta_clock_.restart(), textures_);
-  sprite.setTexture(*textures_.selected_texture);
+  mini_map_.Update(mini_map_sprite_);
 }
 
-auto Engine::Render() noexcept -> void {
+auto Engine::Render() const noexcept -> void {
   window_->clear();
-  mini_map_.Draw(sprite);
-  window_->draw(sprite);
+  window_->draw(sf::Sprite(mini_map_.GetTexture()));
   gui_.Render(*window_);
   window_->display();
 }

@@ -1,5 +1,6 @@
 #include "Gui.hpp"
 #include "Globals.hpp"
+#include "imgui.h"
 
 auto Gui::Init(sf::RenderWindow &window) const noexcept -> void {
   ImGui::SFML::Init(window);
@@ -9,25 +10,32 @@ auto Gui::Init(sf::RenderWindow &window) const noexcept -> void {
 auto Gui::Update(sf::RenderWindow &window, sf::Time time_elapsed,
                  Textures &textures) noexcept -> void {
   ImGui::SFML::Update(window, time_elapsed);
-  ImGui::SetNextWindowSize(sf::Vector2f(180, 200));
-  ImGui::SetNextWindowPos(sf::Vector2f(kWindow_width - 180, 0));
 
   static float dummy_float{0};
 
   ImGui::Begin("Options", nullptr,
-               ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+               ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                   ImGuiWindowFlags_AlwaysAutoResize);
 
-  if (ImGui::CollapsingHeader("Textures")) {
+  ImGui::SetWindowSize(ImVec2(200, 0), ImGuiCond_Always);
+  ImGui::SetWindowPos(sf::Vector2f(kMap_width, 0));
+
+  if (ImGui::CollapsingHeader("Textures        ")) {
     DrawTextures(textures);
   }
-
   if (ImGui::CollapsingHeader("Ray count")) {
     ImGui::SliderFloat("Rays", &dummy_float, 0.f, 100.f);
   }
-
   if (ImGui::CollapsingHeader("Dummy")) {
   }
 
+  ImGui::End();
+
+  ImGui::Begin("Texture", nullptr,
+               ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+                   ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
+  ImGui::SetWindowPos(sf::Vector2f(0, kMap_height));
+  ImGui::Image(*textures.selected_texture);
   ImGui::End();
 }
 
