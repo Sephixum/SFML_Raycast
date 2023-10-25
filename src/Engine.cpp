@@ -1,7 +1,4 @@
 #include "Engine.hpp"
-#include "Utils.hpp"
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/View.hpp>
 
 Engine::Engine() {
   InitWindow();
@@ -38,6 +35,7 @@ auto Engine::PollEvents() -> void {
     case sf::Event::Resized: {
       window_->setView(
           sf::View(sf::FloatRect(0, 0, event_.size.width, event_.size.height)));
+      window_->setSize(sf::Vector2u(kWindow_width, kWindow_height));
 
     } break;
     }
