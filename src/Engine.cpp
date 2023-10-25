@@ -12,6 +12,7 @@ auto Engine::InitWindow() noexcept -> void {
       sf::VideoMode(kWindow_width, kWindow_height), "Develop window",
       sf::Style::Resize);
   window_->setFramerateLimit(60);
+  window_->setKeyRepeatEnabled(true);
 }
 
 auto Engine::InitVariables() noexcept -> void {
@@ -45,6 +46,7 @@ auto Engine::PollEvents() -> void {
 auto Engine::Update() noexcept -> void {
   gui_.Update(*window_, delta_clock_.restart(), textures_);
   mini_map_.Update(mini_map_sprite_);
+  mini_map_sprite_.Update(delta_clock_.restart().asSeconds());
 }
 
 auto Engine::Render() const noexcept -> void {
