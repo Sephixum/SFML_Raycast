@@ -1,5 +1,7 @@
 #include "Utils.hpp"
 
+auto Tile::SetType(TileType tile_type) -> void { type = tile_type; }
+
 auto Utils::MiddleOfShape(const sf::VertexArray &vertecies) -> sf::Vector2f {
   auto sum_of_x = 0.f;
   auto sum_of_y = 0.f;

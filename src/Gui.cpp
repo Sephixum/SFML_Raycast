@@ -8,7 +8,7 @@ auto Gui::Init(sf::RenderWindow &window) const noexcept -> void {
 }
 
 auto Gui::Update(sf::RenderWindow &window, sf::Time time_elapsed,
-                 Textures &textures) noexcept -> void {
+                 Textures &textures, int *vision_density) noexcept -> void {
   ImGui::SFML::Update(window, time_elapsed);
 
   static float dummy_float{0};
@@ -24,7 +24,7 @@ auto Gui::Update(sf::RenderWindow &window, sf::Time time_elapsed,
     DrawTextures(textures);
   }
   if (ImGui::CollapsingHeader("Ray count")) {
-    ImGui::SliderFloat("Rays", &dummy_float, 0.f, 100.f);
+    ImGui::SliderInt("Rays", vision_density, 6, kWindow_width);
   }
   if (ImGui::CollapsingHeader("Dummy")) {
   }

@@ -22,7 +22,8 @@ target_sources(
           src/Map.cpp
           src/Utils.cpp
           src/MyTriangle.cpp
-          src/Player.cpp)
+          src/Player.cpp
+          src/Ray.cpp)
 target_include_directories(output PRIVATE ${PROJECT_BINARY_DIR}
                                           ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(output PRIVATE sfml-graphics sfml-system sfml-window

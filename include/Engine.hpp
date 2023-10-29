@@ -4,7 +4,6 @@
 #include "Gui.hpp"
 #include "Map.hpp"
 #include "MyTriangle.hpp"
-#include "Player.hpp"
 #include "Textures.hpp"
 
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -24,7 +23,6 @@ private:
 
   Gui gui_;
   Map mini_map_;
-  Player mini_map_sprite_;
   Textures textures_;
 
 public:

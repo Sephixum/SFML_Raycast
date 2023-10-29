@@ -1,4 +1,5 @@
 #include "Engine.hpp"
+#include "Ray.hpp"
 
 Engine::Engine() {
   InitWindow();
@@ -18,7 +19,6 @@ auto Engine::InitWindow() noexcept -> void {
 auto Engine::InitVariables() noexcept -> void {
   textures_.Init();
   gui_.Init(*window_);
-  mini_map_sprite_.SetPosition(kMap_width / 2.f, kMap_height / 2.f);
 }
 
 auto Engine::PollEvents() -> void {
@@ -34,9 +34,9 @@ auto Engine::PollEvents() -> void {
       }
     } break;
     case sf::Event::Resized: {
+      window_->setSize(sf::Vector2u(kWindow_width, kWindow_height));
       window_->setView(
           sf::View(sf::FloatRect(0, 0, event_.size.width, event_.size.height)));
-      window_->setSize(sf::Vector2u(kWindow_width, kWindow_height));
 
     } break;
     }
@@ -44,9 +44,10 @@ auto Engine::PollEvents() -> void {
 }
 
 auto Engine::Update() noexcept -> void {
-  gui_.Update(*window_, delta_clock_.restart(), textures_);
-  mini_map_.Update(mini_map_sprite_);
-  mini_map_sprite_.Update(delta_clock_.restart().asSeconds());
+  mini_map_.Update();
+  gui_.Update(*window_, delta_clock_.restart(), textures_,
+              &mini_map_.sprite_.vision_density);
+  mini_map_.SpriteUpdate(delta_clock_.restart().asSeconds());
 }
 
 auto Engine::Render() const noexcept -> void {

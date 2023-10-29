@@ -1,15 +1,15 @@
 #include "Player.hpp"
 #include "Globals.hpp"
-#include "imgui.h"
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Keyboard.hpp>
+#include "Ray.hpp"
+#include <vector>
 
-Player::Player(sf::Vector2f &initial_position) : player_angle(45.f) {
+Player::Player(sf::Vector2f &initial_position)
+    : player_angle(45.f), vision_density(kWindow_width) {
   sprite.setPosition(initial_position);
 }
 
 Player::Player(float initial_position_x, float initial_postion_y)
-    : player_angle(45.f) {
+    : player_angle(45.f), vision_density(kWindow_width) {
   sprite.setPosition(sf::Vector2f(initial_position_x, initial_postion_y));
 }
 
@@ -56,16 +56,38 @@ auto Player::Update(float dt) -> void {
     new_sprite_position += vertical_difference;
   }
 
-  ImGui::Text("(%f, %f)", new_sprite_position.x, new_sprite_position.y);
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+    player_angle -= kPlayer_speed * dt * 2;
+    if (player_angle < 0) {
+      player_angle += 360;
+    }
+  }
+
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
+    player_angle += kPlayer_speed * dt * 2;
+    if (player_angle > 360) {
+      player_angle -= 360;
+    }
+  }
 
   sprite.setPosition(new_sprite_position);
   sprite.setRotation(player_angle);
+}
 
-  // if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-  //   new_sprite_position += horizontal_difference;
-  // }
-  //
-  // if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-  //   new_sprite_position += horizontal_difference;
-  // }
+auto Player::CastRays(const std::vector<TilePtrVec> &tiles) -> void {
+  rays.clear();
+
+  float half_of_fov = kFov /2.f;
+  float delta_ray_deg = kFov / vision_density;
+  float current_ray_angle = player_angle - half_of_fov;
+  float ray_end_deg = player_angle + half_of_fov;
+
+  int current_ray_number = 1;
+  for (; current_ray_angle < ray_end_deg; current_ray_angle += delta_ray_deg) {
+    Ray ray;
+    // ray.Cast(GetPosition(), player_angle, tiles);
+    ray.Cast(GetPosition(), current_ray_angle, tiles);
+    rays.push_back(ray);
+    ++current_ray_number;
+  }
 }
